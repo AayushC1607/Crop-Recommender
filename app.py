@@ -2,8 +2,8 @@ import streamlit as st
 import pandas as pd
 import joblib
 
-# Load your pre-trained model
-model = joblib.load('crop_recommendation_model.pkl')
+# Load your pre-trained Random Forest model
+model = joblib.load('model.pkl')
 
 # Define the list of crops
 crops = [

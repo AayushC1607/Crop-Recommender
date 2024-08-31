@@ -3,7 +3,7 @@ import numpy as np
 import pickle
 
 # Load the pre-trained model
-with open('', 'rb') as model_file:
+with open('crop_recommender_model.pkl', 'rb') as model_file:
     model = pickle.load(model_file)
 
 # Define crop mapping

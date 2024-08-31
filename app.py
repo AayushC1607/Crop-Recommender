@@ -14,10 +14,24 @@ crops = [
 ]
 
 def predict_crop(N, P, K, temperature, humidity, ph, rainfall):
+    # Convert inputs to DataFrame
     input_data = pd.DataFrame([[N, P, K, temperature, humidity, ph, rainfall]],
                               columns=['N', 'P', 'K', 'temperature', 'humidity', 'ph', 'rainfall'])
+    
+    # Make prediction
     prediction = model.predict(input_data)
-    return crops[prediction]
+    
+    # Debugging output
+    st.write(f"Prediction array: {prediction}")
+    st.write(f"Prediction type: {type(prediction[0])}")
+    
+    # Validate and handle prediction
+    if isinstance(prediction[0], int) and 0 <= prediction[0] < len(crops):
+        return crops[prediction[0]]
+    else:
+        st.error(f"Invalid prediction value: {prediction[0]}")
+        return "Unknown"
+
 
 def validate_numeric_input(value):
     try:

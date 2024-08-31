@@ -3,7 +3,7 @@ import pandas as pd
 import joblib
 
 # Load your pre-trained Random Forest model
-model = joblib.load('model.pkl')
+model = joblib.load('crop_recommendation_model.pkl')
 
 # Define the list of crops
 crops = [

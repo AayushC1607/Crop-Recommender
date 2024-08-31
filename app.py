@@ -17,7 +17,7 @@ def predict_crop(N, P, K, temperature, humidity, ph, rainfall):
     input_data = pd.DataFrame([[N, P, K, temperature, humidity, ph, rainfall]],
                               columns=['N', 'P', 'K', 'temperature', 'humidity', 'ph', 'rainfall'])
     prediction = model.predict(input_data)
-    return crops[prediction[0]]
+    return crops[prediction]
 
 def validate_numeric_input(value):
     try:

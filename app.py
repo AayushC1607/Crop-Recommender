@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import joblib
 
-model = joblib.load('')
+model = joblib.load('crop_recommendation_model.pkl')
 
 crops = ["Apple", "Banana", "Blackgram", "Chickpea", "Coconut", "Coffee", 
     "Cotton", "Grapes", "Jute", "Kidney Beans", "Lentil", "Maize", 

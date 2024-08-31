@@ -62,15 +62,9 @@ ph = validate_numeric_input(ph)
 rainfall = validate_numeric_input(rainfall)
 
 # Check for invalid inputs
-if st.button('Recommend'):
-        # Prepare input for model
-        input_data = np.array([[N, P, K, temperature, humidity, ph, rainfall]])
-        prediction = model.predict(input_data)[0]
-        
-        # Map prediction to crop
-        recommended_crop = crop_mapping.get(prediction, 'Unknown')
-        
-        st.write(f"Recommended Crop: {recommended_crop}")
-
-if __name__ == "__main__":
-    main()
+if None in [N, P, K, temperature, humidity, ph, rainfall]:
+    st.error("Invalid input: Please enter valid numerical values.")
+else:
+    if st.button('Predict'):
+        crop = predict_crop(N, P, K, temperature, humidity, ph, rainfall)
+        st.write(f"Recommended Crop: {crop}")

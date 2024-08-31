@@ -7,10 +7,10 @@ model = joblib.load('crop_recommendation_model.pkl')
 
 # Define the list of crops
 crops = [
-    "Apple", "Banana", "Blackgram", "Chickpea", "Coconut", "Coffee", 
-    "Cotton", "Grapes", "Jute", "Kidney Beans", "Lentil", "Maize", 
-    "Mango", "Moth Beans", "Moong Beans", "Muskmelon", "Orange", 
-    "Papaya", "Pigeonpea", "Pomogrenate", "Rice", "Watermelon"
+    "apple", "banana", "blackgram", "chickpea", "coconut", "coffee", 
+    "cotton", "grapes", "jute", "kidneybeans", "lentil", "maize", 
+    "mango", "mothbeans", "mungbeans", "muskmelon", "orange", 
+    "papaya", "pigeonpea", "pomogrenate", "rice", "watermelon"
 ]
 
 def predict_crop(N, P, K, temperature, humidity, ph, rainfall):

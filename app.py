@@ -5,13 +5,14 @@ import joblib
 # Load your pre-trained Random Forest model
 model = joblib.load('crop_recommender_model.pkl')
 
-# Define the list of crops
-crops = [
-    "apple", "banana", "blackgram", "chickpea", "coconut", "coffee", 
-    "cotton", "grapes", "jute", "kidneybeans", "lentil", "maize", 
-    "mango", "mothbeans", "mungbeans", "muskmelon", "orange", 
-    "papaya", "pigeonpea", "pomogrenate", "rice", "watermelon"
-]
+# Define the dictionary of crops
+crop_mapping = {
+    0: 'apple', 1: 'banana', 2: 'blackgram', 3: 'chickpea', 4: 'coconut',
+    5: 'coffee', 6: 'cotton', 7: 'grapes', 8: 'jute', 9: 'kidneybeans',
+    10: 'lentil', 11: 'maize', 12: 'mango', 13: 'mothbeans', 14: 'mungbean',
+    15: 'muskmelon', 16: 'orange', 17: 'papaya', 18: 'pigeonpeas', 19: 'pomegranate',
+    20: 'rice', 21: 'watermelon'
+}]
 
 def predict_crop(N, P, K, temperature, humidity, ph, rainfall):
     # Convert inputs to DataFrame

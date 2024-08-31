@@ -12,7 +12,7 @@ crop_mapping = {
     10: 'lentil', 11: 'maize', 12: 'mango', 13: 'mothbeans', 14: 'mungbean',
     15: 'muskmelon', 16: 'orange', 17: 'papaya', 18: 'pigeonpeas', 19: 'pomegranate',
     20: 'rice', 21: 'watermelon'
-}]
+}
 
 def predict_crop(N, P, K, temperature, humidity, ph, rainfall):
     # Convert inputs to DataFrame

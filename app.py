@@ -63,9 +63,3 @@ else:
         recommended_crop = crop_mapping.get(prediction, 'Unknown')
         
         st.write(f"Recommended Crop: {recommended_crop}")
-
-        
-        # Map prediction to crop
-        recommended_crop = crop_mapping.get(prediction, 'Unknown')
-        
-        st.write(f"Recommended Crop: {recommended_crop}")

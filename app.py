@@ -15,36 +15,24 @@ crop_mapping = {
     20: 'Rice', 21: 'Watermelon'
 }
 
-def predict_crop(N, P, K, temperature, humidity, ph, rainfall):
-    # Convert inputs to DataFrame
-    input_data = pd.DataFrame([[N, P, K, temperature, humidity, ph, rainfall]],
-                              columns=['N', 'P', 'K', 'temperature', 'humidity', 'ph', 'rainfall'])
-    
-    # Make prediction
-    prediction = model.predict(input_data)
-    
-    # Debugging output
-    st.write(f"Prediction array: {prediction}")
-    st.write(f"Prediction type: {type(prediction[0])}")
-    
-    # Validate and handle prediction
-    if isinstance(prediction[0], int) and 0 <= prediction[0] < len(crops):
-        return crops[prediction[0]]
-    else:
-        st.error(f"Invalid prediction value: {prediction[0]}")
-        return "Unknown"
-
-
-def validate_numeric_input(value):
+def validate_numeric_input(value, min_val, max_val, field_name):
+    """
+    Validate numeric input within a range.
+    """
     try:
-        return float(value)
+        value = float(value)
+        if value < min_val or value > max_val:
+            st.error(f"{field_name} should be between {min_val} and {max_val}.")
+            return None
+        return value
     except ValueError:
+        st.error(f"Invalid input for {field_name}. Please enter a numeric value.")
         return None
 
 # Streamlit app
 st.title("Crop Recommendation System")
 
-# Input fields
+# Input fields with validation
 N = st.text_input('Nitrogen (N)', '')
 P = st.text_input('Phosphorus (P)', '')
 K = st.text_input('Potassium (K)', '')
@@ -53,23 +41,29 @@ humidity = st.text_input('Humidity (%)', '')
 ph = st.text_input('pH of soil', '')
 rainfall = st.text_input('Rainfall (mm)', '')
 
-# Validate inputs
-N = validate_numeric_input(N)
-P = validate_numeric_input(P)
-K = validate_numeric_input(K)
-temperature = validate_numeric_input(temperature)
-humidity = validate_numeric_input(humidity)
-ph = validate_numeric_input(ph)
-rainfall = validate_numeric_input(rainfall)
+# Validate inputs with their respective ranges
+N = validate_numeric_input(N, 0, 140, 'Nitrogen (N)')
+P = validate_numeric_input(P, 5, 145, 'Phosphorus (P)')
+K = validate_numeric_input(K, 5, 205, 'Potassium (K)')
+temperature = validate_numeric_input(temperature, 0, 50, 'Temperature (°C)')
+humidity = validate_numeric_input(humidity, 10, 100, 'Humidity (%)')
+ph = validate_numeric_input(ph, 3.5, 9.94, 'pH of soil')
+rainfall = validate_numeric_input(rainfall, 15, 300, 'Rainfall (mm)')
 
 # Check for invalid inputs
 if None in [N, P, K, temperature, humidity, ph, rainfall]:
-    st.error("Invalid input: Please enter valid numerical values.")
+    st.error("Please correct the invalid inputs before proceeding.")
 else:
     if st.button('Recommend'):
         # Prepare input for model
         input_data = np.array([[N, P, K, temperature, humidity, ph, rainfall]])
         prediction = model.predict(input_data)[0]
+        
+        # Map prediction to crop
+        recommended_crop = crop_mapping.get(prediction, 'Unknown')
+        
+        st.write(f"Recommended Crop: {recommended_crop}")
+
         
         # Map prediction to crop
         recommended_crop = crop_mapping.get(prediction, 'Unknown')

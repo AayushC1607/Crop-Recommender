@@ -1,9 +1,8 @@
-import streamlit as st
-import pandas as pd
-import numpy as np
+from flask import Flask, request, jsonify
 import joblib
+import numpy as np
 
-# Load your pre-trained Random Forest model
+# Load the pre-trained Random Forest model
 model = joblib.load('crop_recommender_model.pkl')
 
 # Define the dictionary of crops
@@ -15,51 +14,35 @@ crop_mapping = {
     20: 'Rice', 21: 'Watermelon'
 }
 
-def validate_numeric_input(value, min_val, max_val, field_name):
-    """
-    Validate numeric input within a range.
-    """
+app = Flask(__name__)
+
+@app.route('/recommend-crop', methods=['POST'])
+def recommend_crop():
+    data = request.get_json()
+    
+    # Extract values from the request
     try:
-        value = float(value)
-        if value < min_val or value > max_val:
-            st.error(f"{field_name} should be between {min_val} and {max_val}.")
-            return None
-        return value
+        N = float(data['nitrogen'])
+        P = float(data['phosphorus'])
+        K = float(data['potassium'])
+        temperature = float(data['temperature'])
+        humidity = float(data['humidity'])
+        ph = float(data['ph'])
+        rainfall = float(data['rainfall'])
     except ValueError:
-        st.error(f"Invalid input for {field_name}. Please enter a numeric value.")
-        return None
+        return jsonify({"error": "Invalid input, all fields must be numeric"}), 400
 
-# Streamlit app
-st.title("Crop Recommendation System")
+    # Prepare input for the model
+    input_data = np.array([[N, P, K, temperature, humidity, ph, rainfall]])
+    
+    # Make the prediction
+    prediction = model.predict(input_data)[0]
+    
+    # Map prediction to crop
+    recommended_crop = crop_mapping.get(prediction, 'Unknown')
+    
+    # Return the recommended crop as JSON
+    return jsonify({"recommended_crop": recommended_crop})
 
-# Input fields with validation
-N = st.text_input('Nitrogen (N)', '')
-P = st.text_input('Phosphorus (P)', '')
-K = st.text_input('Potassium (K)', '')
-temperature = st.text_input('Temperature (°C)', '')
-humidity = st.text_input('Humidity (%)', '')
-ph = st.text_input('pH of soil', '')
-rainfall = st.text_input('Rainfall (mm)', '')
-
-# Validate inputs with their respective ranges
-N = validate_numeric_input(N, 0, 140, 'Nitrogen (N)')
-P = validate_numeric_input(P, 5, 145, 'Phosphorus (P)')
-K = validate_numeric_input(K, 5, 205, 'Potassium (K)')
-temperature = validate_numeric_input(temperature, 0, 50, 'Temperature (°C)')
-humidity = validate_numeric_input(humidity, 10, 100, 'Humidity (%)')
-ph = validate_numeric_input(ph, 3.5, 9.94, 'pH of soil')
-rainfall = validate_numeric_input(rainfall, 15, 300, 'Rainfall (mm)')
-
-# Check for invalid inputs
-if None in [N, P, K, temperature, humidity, ph, rainfall]:
-    st.error("Please correct the invalid inputs before proceeding.")
-else:
-    if st.button('Recommend'):
-        # Prepare input for model
-        input_data = np.array([[N, P, K, temperature, humidity, ph, rainfall]])
-        prediction = model.predict(input_data)[0]
-        
-        # Map prediction to crop
-        recommended_crop = crop_mapping.get(prediction, 'Unknown')
-        
-        st.write(f"Recommended Crop: {recommended_crop}")
+if __name__ == '__main__':
+    app.run(debug=True)
